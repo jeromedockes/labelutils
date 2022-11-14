@@ -1,3 +1,1 @@
-import importlib_metadata
-
-__version__ = importlib_metadata.version("labelutils")
+__version__ = "0.0.1"

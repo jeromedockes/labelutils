@@ -24,6 +24,7 @@ jobs:
         name: "setup python"
       - name: "install"
         run: |
+          pip install -U pip
           pip install .
           pip install pytest
       - name: "run tests"

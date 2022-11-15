@@ -20,6 +20,7 @@ from typing import (
     Iterable,
     Sequence,
 )
+import warnings
 
 import pandas as pd
 
@@ -100,7 +101,11 @@ class _InceptionDoc:
 
     def _read_header(self) -> str:
         header_lines = []
-        while not self._at_end and not self._current_line.startswith("#Text"):
+        while (
+            not self._at_end
+            and not self._current_line.startswith("#Text")
+            and not self._current_line.startswith("#Sentence.id")
+        ):
             header_lines.append(self._current_line + "\n")
             self._next()
         return "".join(header_lines)
@@ -451,6 +456,9 @@ class InceptionWriter:
         for doc in documents:
             stem = self._filename_pattern.format(**doc["metadata"])
             wtsv_file = (self._wtsv_dir / stem).with_suffix(".wtsv")
+            if not wtsv_file.is_file():
+                warnings.warn(f"Missing wtsv file: {wtsv_file}")
+                continue
 
             output_wtsv = (out_wtsv_dir / stem).with_suffix(".wtsv")
             wtsv = _InceptionDoc(wtsv_file, doc["text"])
